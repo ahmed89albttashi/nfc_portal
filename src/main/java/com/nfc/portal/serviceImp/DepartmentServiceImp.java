@@ -1,5 +1,7 @@
 package com.nfc.portal.serviceImp;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,12 @@ public class DepartmentServiceImp implements DepartmentService {
 	public Department findByCode(String code) {
 		// TODO Auto-generated method stub
 		return deprtmentRepository.findByCode(code);
+	}
+
+	@Override
+	public List<Department> finAll() {
+		// TODO Auto-generated method stub
+		return deprtmentRepository.findAll();
 	}
 
 }

@@ -18,8 +18,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
 
 @Entity
 @Table(name = "a_staffs", catalog = "public", uniqueConstraints = {
@@ -30,9 +33,13 @@ public class Staff {
 	
 	@Id
 	@Column(name = "staff_id", unique = true, nullable = false)
-	@SequenceGenerator(name = "staff_id_seq", sequenceName = "staff_id_seq")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staff_id_seq")
 	private Long staff_id;
+	
+	@Column(name="id_number")
+	private String id_number;
+	
+	@OneToOne(mappedBy="staff")
+	private User user;
 	
 	@Column(name="fname_ar")
 	private String fName_ar;
@@ -65,6 +72,39 @@ public class Staff {
 	@Column(name="full_name_en")
 	private String fullName_en;
 
+
+	@Column(name="status")
+	private String status;
+	
+	@Column(name="mobile")
+	private String mobile;
+	
+	@Column(name="cpn")
+	private String cpn;
+	
+	@Column(name="telephone")
+	private String telephone;
+	
+	
+	@Column(name="gender")
+	private String gender;
+
+	@Column(name="nationality")
+	private String nationality;
+	
+
+	@Column(name="dob",columnDefinition = "timestamp without time zone",nullable=true)
+	@DateTimeFormat(pattern="dd/MM/yyyy")
+	private Date dob;
+	
+	@Column(name="live_in")
+	private String live_in;
+	
+
+	@Column(name="join_on")
+	private Date join_on;
+	
+	
 	
 	@Column(name="grade")
 	private String grade;
@@ -123,6 +163,17 @@ public class Staff {
 
 	public void setStaff_id(Long staff_id) {
 		this.staff_id = staff_id;
+	}
+
+	
+
+	public User getUser() {
+		return user;
+	}
+
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 
@@ -284,6 +335,171 @@ public class Staff {
 	public void setDepartment(Department department) {
 		this.department = department;
 	}
+
+
+	public String getGender() {
+		return gender;
+	}
+
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+
+	public String getNationality() {
+		return nationality;
+	}
+
+
+	public void setNationality(String nationality) {
+		this.nationality = nationality;
+	}
+
+
+	public Date getDob() {
+		return dob;
+	}
+
+
+	public void setDob(Date dob) {
+		this.dob = dob;
+	}
+
+
+	public String getLive_in() {
+		return live_in;
+	}
+
+
+	public void setLive_in(String live_in) {
+		this.live_in = live_in;
+	}
+
+
+	public Date getJoin_on() {
+		return join_on;
+	}
+
+
+	public void setJoin_on(Date join_on) {
+		this.join_on = join_on;
+	}
+
+
+	public User getCreated_by() {
+		return created_by;
+	}
+
+
+	public void setCreated_by(User created_by) {
+		this.created_by = created_by;
+	}
+
+
+	public Date getCreated_on() {
+		return created_on;
+	}
+
+
+	public void setCreated_on(Date created_on) {
+		this.created_on = created_on;
+	}
+
+
+	public User getChanged_by() {
+		return changed_by;
+	}
+
+
+	public void setChanged_by(User changed_by) {
+		this.changed_by = changed_by;
+	}
+
+
+	public Date getChanged_on() {
+		return changed_on;
+	}
+
+
+	public void setChanged_on(Date changed_on) {
+		this.changed_on = changed_on;
+	}
+
+	
+
+	public String getMobile() {
+		return mobile;
+	}
+
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+
+	public String getCpn() {
+		return cpn;
+	}
+
+
+	public void setCpn(String cpn) {
+		this.cpn = cpn;
+	}
+
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+	
+	
+
+
+	public String getId_number() {
+		return id_number;
+	}
+
+
+	public void setId_number(String id_number) {
+		this.id_number = id_number;
+	}
+
+	
+
+	public String getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Staff [staff_id=" + staff_id + ", id_number=" + id_number + ", fName_ar=" + fName_ar + ", sName_ar="
+				+ sName_ar + ", tName_ar=" + tName_ar + ", familyName_ar=" + familyName_ar + ", fullName_ar="
+				+ fullName_ar + ", fName_en=" + fName_en + ", sName_en=" + sName_en + ", tName_en=" + tName_en
+				+ ", familyName_en=" + familyName_en + ", fullName_en=" + fullName_en + ", mobile=" + mobile + ", cpn="
+				+ cpn + ", telephone=" + telephone + ", gender=" + gender + ", nationality=" + nationality + ", dob="
+				+ dob + ", live_in=" + live_in + ", join_on=" + join_on + ", grade=" + grade + ", position=" + position
+				+ ", positionType=" + positionType + ", subOrdinate=" + subOrdinate + ", department=" + department
+				+ ", created_on=" + created_on + ", changed_on=" + changed_on + "]";
+	}
+
+
+
+
+	
+
+	
+	
 	
 	
 	

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.nfc.portal.entity.A1Ticket;
 import com.nfc.portal.entity.A1Track;
+import com.nfc.portal.entity.User;
 
 @Repository
 public interface A1TrackRepository extends CrudRepository<A1Track, Long> {
@@ -52,7 +53,7 @@ public interface A1TrackRepository extends CrudRepository<A1Track, Long> {
 	public List<A1Track> findByA1Ticket(@Param("a1Ticket") A1Ticket a1Ticket);
 
 	
-	@Query(" from A1Track track, Attachment attch"
+	@Query(" from A1Track track, A1Attachment attch"
 			+ " where track.a1Ticket= :a1Ticket "
 			+ " order by created_on")
 	public List<A1Track> findWithAttachmentByA1Ticket(@Param("a1Ticket") A1Ticket a1Ticket);
@@ -70,6 +71,43 @@ public interface A1TrackRepository extends CrudRepository<A1Track, Long> {
 			+ "and track.track=:track "
 			+ " order by track.changed_on desc")
 	public List<A1Track> findByTrack(@Param("track") String track);
+	
+
+	@Query(" from"
+			+ " A1Track track "
+			+ " where"
+			+ "		 track.changed_on = (select max(stra.changed_on) "
+			+ "				from A1Track stra "
+			+ "				where "
+			+ "					track.a1Ticket = stra.a1Ticket  group by ticket_id) "
+			+ " and track.track=:track "
+			+ " and track.a1Ticket.created_by =:created_by"
+			+ " order by track.changed_on desc")
+	public List<A1Track> findByCreatedByAndTrack(@Param("created_by") User created_by,@Param("track") String track);
+	
+	
+	@Query(" from"
+			+ " A1Track track "
+			+ " where"
+			+ "		 track.changed_on = (select max(stra.changed_on) "
+			+ "				from A1Track stra "
+			+ "				where "
+			+ "					track.a1Ticket = stra.a1Ticket  group by ticket_id) "
+			+ " and track.track!='closed' "
+			+ " and track.a1Ticket.created_by =:created_by"
+			+ " order by track.changed_on desc")
+	public List<A1Track> findByCreatedByAndTrackNotClosed(@Param("created_by") User created_by);
+	
+	@Query(" from"
+			+ " A1Track track "
+			+ " where"
+			+ "		 track.changed_on = (select max(stra.changed_on) "
+			+ "				from A1Track stra "
+			+ "				where "
+			+ "					track.a1Ticket = stra.a1Ticket  group by ticket_id) "
+			+ " order by created_by desc")
+	
+	public List<A1Track> trackReport();
 	
 }
 

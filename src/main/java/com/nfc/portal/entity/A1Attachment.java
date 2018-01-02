@@ -19,8 +19,8 @@ import javax.persistence.UniqueConstraint;
 
 
 @Entity
-@Table(name="a_attachments",catalog="public",uniqueConstraints={@UniqueConstraint(columnNames= "attachment_id")})
-public class Attachment {
+@Table(name="a1_attachments",catalog="public",uniqueConstraints={@UniqueConstraint(columnNames= "attachment_id")})
+public class A1Attachment {
 	
 
 	@Id

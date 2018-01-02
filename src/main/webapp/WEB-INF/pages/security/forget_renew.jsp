@@ -5,7 +5,7 @@
 
 <%@ include file="/WEB-INF/pages/mainTemplate/header.jsp"%>
 
- <c:out value="${pageContext.request.locale.language}" />
+ 
 
 <div id="loginbox" style="margin-top: 50px;"
 	class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">

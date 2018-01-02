@@ -3,6 +3,8 @@ package com.nfc.portal.service;
 import java.util.List;
 
 import com.nfc.portal.entity.A1Ticket;
+import com.nfc.portal.entity.A1Track;
+import com.nfc.portal.entity.Staff;
 import com.nfc.portal.entity.User;
 
 
@@ -18,5 +20,11 @@ public interface A1TicketService {
 	public A1Ticket findByA1_ticket_ticket_id(Long a1_ticket_ticket_id);
 	
 	public List<A1Ticket> findByCreated_by(User created_by);
-
+	
+	public List<A1Track> findByCreatedByAndTrack(User created_by,String track);
+	
+	public List<A1Track> findByCreatedByAndTrackNotClosed(User created_by);
+	
+	public List<A1Ticket> findByRecipients(Staff staff);
+	
 }

@@ -26,29 +26,45 @@
 		
 		<table>
 		<tr>
-		<td  width="50%" style=" padding-left:10px;  background-color:#FFF4F0; border-style: solid;border-width: 5px; border-color:#00435C;border-radius: 5px; padding:5px;">
-		
-		<h3> New Ticket Created </h3>
+		<td  width="50%" style=" padding-left:10px;  background-color:#FFF4F0; border-style: solid;border-width: 5px; border-color:#00435C;border-radius: 5px; padding:5px; vertical-align: text-top;">
+		<h3> New Ticket Created No :: <i> ${ticket.getA1_ticket_ticket_id()} </i></h3>
 		  <hr>
-		  Greetings <b>${user.getName()} </b> <br>
-		   You have create a new IT Ticket, Our staff will have a look on your issue and will feed you back . 
+		  Greetings <b> </b> <br>
+		  New ticket has been created by : 
+<i>
+${staff}
+</i> <br>
+about :<br><i><b>
+${ticket.getTitle()}
+</b></i><br>
 		<hr>
 		for tracking updates click : 
 		
+
+Ticket link
+
+		<a href="${baseUrl}a/itTicket/track/${ticket.getA1_ticket_ticket_id()}/">
+Internal link
+		</a> || 
+		<a href="http://85.154.229.6:8080/a/itTicket/track/${ticket.getA1_ticket_ticket_id()}/">
+External link
+		</a>. 
 		</td>
 		<td>|</td>
-		<td  width="50%" style=" padding-right:20px;  background-color:#FFF4F0; border-style: solid;border-width: 5px; border-color:#00435C; padding:5px; text-align:right;border-radius: 5px;">
-		<h3> تم إنشاء المذكرة </h3>
+		<td  width="50%" style=" padding-right:20px;  background-color:#FFF4F0; border-style: solid;border-width: 5px; border-color:#00435C; padding:5px; text-align:right;border-radius: 5px;direction:rtl;">
+		<h3> تم إنشاء المذكرة رقم :: <i> ${ticket.getA1_ticket_ticket_id()} </i></h3>
 		  <hr>
 		  		
-السلام عليكم ، <br>
-<b>${user.getName()}</b>
+مرحبا<b></b>
 <br>
-
- لقد قمت بإنشاء مذكرة حول 
- <br><i>
+لقد قام : 
+<i>
+${staff}
+</i> <br>
+ بإنشاء مذكرة جديدة حول 
+ <br><i><b>
 ${ticket.getTitle()}
-</i><br>
+</b></i><br>
  لقسم تقنية المعلومات  
 <br>
 
@@ -62,9 +78,14 @@ ${ticket.getTitle()}
 لمتابعة التحديثات إدخل على الرابط    <br>
 
 
-<a href="${baseUrl}a/itTicket/my_tickets">
-الرابط
-		</a> 
+رابط المذكرة 
+		<a href="${baseUrl}a/itTicket/track/${ticket.getA1_ticket_ticket_id()}/">
+الرابط الداخلي
+		</a> || 
+		<a href="http://85.154.229.6:8080/a/itTicket/track/${ticket.getA1_ticket_ticket_id()}/">
+الرابط الخارجي
+		</a>. 
+		
 		</td>
 		</tr>
 		</table>

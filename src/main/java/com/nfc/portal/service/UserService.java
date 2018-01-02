@@ -18,11 +18,13 @@ public interface UserService {
 
 	public User getUserByEmail(String email);
 
-	public List<User> getUserByDepartment(Department department);
 
 	public List<User> getUserList(User user);
 
 	public List<User> getList(User user,Integer start, Integer limit, String order_on, String order_way); 
 	
 	public List<User> getAllUsers();
+
+
+	List<User> getByEnabled(boolean enabled);
 }

@@ -57,7 +57,7 @@
 								<a href="./a/itTicket/track/${tr.getA1Ticket().getA1_ticket_ticket_id()}/">${tr.getA1Ticket().getTitle()} 
 								
 								<br>
-								<small class="text-muted">${tr.getA1Ticket().getCreated_by().getName()} </small> </a>
+								<small class="text-muted">${tr.getA1Ticket().getCreated_by().getStaff().getFullName_en()} </small> </a>
 								
 								</td>
 								

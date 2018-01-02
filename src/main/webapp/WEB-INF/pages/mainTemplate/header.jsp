@@ -21,6 +21,8 @@
 <script type="text/javascript" src="./resources/js/${js}"></script>
 </c:forEach>
 
+<c:set var="locale" value="${pageContext.request.locale.language}" /> 
+
 <% 
 Enumeration en = request.getParameterNames();
 
@@ -120,8 +122,8 @@ Enumeration en = request.getParameterNames();
 						<ul class="dropdown-menu" role="menu">
 						
 						
-							<li><a href="${c_url}?locale=ar">Ar</a></li>
-							<li><a href="${c_url}?locale=en">En</a></li>
+							<li><a href="${c_url}?locale=ar">عربي</a></li>
+							<li><a href="${c_url}?locale=en">English</a></li>
 						</ul></li>
 					
 					<li class="dropdown"><a href="#" class="dropdown-toggle glyphicon glyphicon-user"
@@ -132,11 +134,18 @@ Enumeration en = request.getParameterNames();
 						<span class="caret"></span>
 					</a>
 						<ul class="dropdown-menu" role="menu">
+									
+			<sec:authorize access="@a1SecurityService.canAccessAdmin(authentication)">
+			
+							<li><a href="./sysAdmin/" ><spring:message code="sys.admin"/></a></li>
+			</sec:authorize>
 							<li><a href="./sec/logout/" ><spring:message code="tmplt.hdr.signout"/></a></li>
+							<li><a href="./sec/change_password/" ><spring:message code="sec.change_pass"/></a></li>
 						</ul></li>
 						
 						</sec:authorize>
 						
+			
 						<sec:authorize access="isAnonymous()"> 
 						<spring:message code="tmplt.hdr.account"/>
 						

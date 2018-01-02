@@ -1,7 +1,10 @@
 package com.nfc.portal.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,6 +12,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -31,10 +37,13 @@ public class A1Ticket {
 	public String type;
 	public String sub_type;
 	public String title;
-	public String desc;
 	public String detail;
 	public String ip;
+	public Set<Staff> recipients =new HashSet<Staff>(0);
+	public Set<A1Tracker> trackers =new HashSet<A1Tracker>(0);
 
+
+	
 	public User created_by;
 	public Date created_on;
 	public User changed_by;
@@ -100,6 +109,32 @@ public class A1Ticket {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
+	
+	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "a1_r_ticket_recipients", catalog = "public", joinColumns = { 
+			@JoinColumn(name = "a1_ticket_ticket_id", nullable = false, updatable = false) }, 
+			inverseJoinColumns = { @JoinColumn(name = "staff_id", 
+					nullable = false, updatable = false) })
+	public Set<Staff> getRecipients() {
+		return recipients;
+	}
+
+	public void setRecipients(Set<Staff> recipients) {
+		this.recipients = recipients;
+	}
+
+	
+	
+
+	@OneToMany(mappedBy="ticket_id")
+	public Set<A1Tracker> getTrackers() {
+		return trackers;
+	}
+
+	public void setTrackers(Set<A1Tracker> trackers) {
+		this.trackers = trackers;
+	}
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by")
@@ -145,7 +180,7 @@ public class A1Ticket {
 	@Override
 	public String toString() {
 		return "A1Ticket [a1_ticket_ticket_id=" + a1_ticket_ticket_id + ", type=" + type + ", sub_type=" + sub_type
-				+ ", title=" + title + ", desc=" + desc + ", detail=" + detail + ", ip=" + ip + ", created_by="
+				+ ", title=" + title + ", detail=" + detail + ", ip=" + ip + ", created_by="
 				+ created_by + ", created_on=" + created_on + ", changed_by=" + changed_by + ", changed_on="
 				+ changed_on + "]";
 	}

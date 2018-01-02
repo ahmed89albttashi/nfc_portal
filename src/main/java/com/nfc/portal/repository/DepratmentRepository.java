@@ -11,5 +11,7 @@ import java.util.List;
 public interface DepratmentRepository extends CrudRepository<Department, Long>{
 
 	 Department findByCode(String code);
-	
+	 
+	 List<Department> findAll();
+
 }

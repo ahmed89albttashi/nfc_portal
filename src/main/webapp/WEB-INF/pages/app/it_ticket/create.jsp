@@ -85,7 +85,7 @@
         </div>
     </script>
 
-    
+
 
 <div class="row  pad-top">
 
@@ -104,12 +104,13 @@
 				<div id="emp_steps">
 					<section>
 						<p>
-							<form:form id="create_ticket_frm" role="form" action="./a/itTicket/create/"
-								method="post" commandName="a_IT_Ticket" accept-charset="UTF-8">
+							<form:form id="create_ticket_frm" role="form"
+								action="./a/itTicket/create/" method="post"
+								commandName="a_IT_Ticket" accept-charset="UTF-8">
 
 								<form:errors path="*">
 								</form:errors>
-								
+
 
 								<div class="panel-body"></div>
 								<input type="hidden" name="${_csrf.parameterName}"
@@ -175,23 +176,17 @@
 															name="sub_type" value="network" id="option2"
 															autocomplete="off" checked> <spring:message
 																code="a.it_ticket.f.type.support.type.network" />
-														</label> 
-														
-														<label class="btn btn-default"> <span
+														</label> <label class="btn btn-default"> <span
 															class="fa fa-envelope-o"> </span> <input type="radio"
 															name="sub_type" value="email" id="option2"
 															autocomplete="off"> <spring:message
 																code="a.it_ticket.f.type.support.type.email" />
-														</label> 
-														
-														<label class="btn btn-default "> <span
+														</label> <label class="btn btn-default "> <span
 															class="fa fa-phone"> </span> <input type="radio"
 															value="extension" name="sub_type" id="option2"
 															autocomplete="off"> <spring:message
 																code="a.it_ticket.f.type.support.type.extension" />
-														</label>
-														
-														<label class="btn btn-default "> <span
+														</label> <label class="btn btn-default "> <span
 															class="fa fa-print"> </span> <input type="radio"
 															name="sub_type" value="printer" id="option2"
 															autocomplete="off"> <spring:message
@@ -212,6 +207,38 @@
 
 												</div>
 
+
+<%-- ${locale} --%>												
+<spring:message code="a.it_ticket.f.title" var="title" />
+												
+												<div class="form-group input-group">
+													<span class="input-group-addon"><i
+														class="glyphicon glyphicon-send"></i></span>
+													<spring:bind path="title">
+													<select name="recipients" data-placeholder="<spring:message code="a.it_ticket.f.recipients" />" 
+													  class="chosen-select" multiple tabindex="6">
+													<c:forEach var="dep" items="${deps}">
+													<c:choose>
+													
+													<c:when test="${locale=='en' }" >
+													<optgroup label="${dep.getName_en()}">
+													</c:when>
+													
+													<c:when test="${locale=='ar' }" >
+													<optgroup label="${dep.getName_ar()}">
+													</c:when>
+													</c:choose>
+													<c:forEach var="staff" items="${dep.getStaff()}">
+													<option value="${staff.getStaff_id()}">${staff.getFullName_en()}</option>
+													</c:forEach>
+													</optgroup>
+														 
+														</c:forEach>
+													
+													</select>
+														
+													</spring:bind>
+												</div>
 
 												<spring:message code="a.it_ticket.f.title" var="title" />
 												<div class="form-group input-group">
@@ -253,9 +280,9 @@
 												</h3>
 											</div>
 											<div id="fine-uploader-gallery"></div>
-											</div>
-											</div>
-											</div>
+										</div>
+									</div>
+								</div>
 
 								<button type="submit" class="btn btn-lg btn-primary ">
 									<spring:message code="tmplt.hdr.submit" />
@@ -275,19 +302,19 @@
 
 		</div>
 	</div>
-	
-	
-	
-	
 
-	
-<script src="./resources/js/jquery.fine-uploader.min.js"
-	type="text/javascript">
+
+
+
+
+
+	<script src="./resources/js/jquery.fine-uploader.min.js"
+		type="text/javascript">
 	
 	
 </script>
 
-<script>
+	<script>
 $('#fine-uploader-gallery').fineUploader({
     template: 'qq-template-gallery',
     request: {
@@ -315,8 +342,13 @@ $('#fine-uploader-gallery').fineUploader({
 
 
 });
+
+$(function() {
+    $('.chosen-select').chosen();
+    $('.chosen-select-deselect').chosen({ allow_single_deselect: true });
+  });
     </script>
-<!-- 
+	<!-- 
 
 
 
@@ -331,7 +363,7 @@ $('#fine-uploader-gallery').fineUploader({
 </script>
 
  -->
-<!-- 
+	<!-- 
 <script type="text/javascript">
 	$(document).ready(function() {
 
@@ -349,4 +381,4 @@ $('#fine-uploader-gallery').fineUploader({
  -->
 
 
-<%@ include file="/WEB-INF/pages/mainTemplate/footer.jsp"%>
+	<%@ include file="/WEB-INF/pages/mainTemplate/footer.jsp"%>

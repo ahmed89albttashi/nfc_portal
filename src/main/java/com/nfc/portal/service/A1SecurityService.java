@@ -5,5 +5,6 @@ import org.springframework.security.core.Authentication;
 public interface A1SecurityService {
 
 	public boolean canAccessTrack(Authentication authentication, Long ticket_id);
+	public boolean canAccessAdmin(Authentication authentication);
 
 }

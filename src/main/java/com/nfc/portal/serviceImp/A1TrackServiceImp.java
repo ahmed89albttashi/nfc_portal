@@ -99,5 +99,11 @@ public class A1TrackServiceImp implements A1TrackService {
 		return a1TrackRepository.findByTrack(track);
 	}
 
+	@Override
+	public List<A1Track> trackReport() {
+
+		return a1TrackRepository.trackReport();
+	}
+
 
 }

@@ -23,14 +23,18 @@
 				<div id="emp_steps">
 					<section>
 						<p>
-							<form:form role="form" action="./admin/user/create/"
-								method="post" commandName="user">
+							<form role="form" action="./sysAdmin/users/add/done/"
+								method="post" >
 
 								<div class="panel-body"></div>
 								<input type="hidden" name="${_csrf.parameterName}"
 									value="${_csrf.token}" />
 								<br>
 								<div class="row">
+								
+								<form:errors path="*" class="error alert alert-danger alert-error" element="div" />
+												
+												
 									<div class="col-md-5 col-sm-12">
 										<div class="panel panel-primary">
 											<div class="panel-heading">
@@ -39,25 +43,25 @@
 											<div class="panel-body">
 
 
-												<form:errors path="email"
+												<form:errors path="user.email"
 													class="error alert alert-danger alert-error" element="div" />
 												<div class="form-group input-group">
 													<span class="input-group-addon"><i class="fa fa-at"></i></span>
 
 													<form:input type="text" class="form-control"
-														placeholder="Email" path="email" required="required" />
+														placeholder="Email" path="user.email" required="required" />
 
 
 												</div>
 
 
-												<form:errors path="staff_id"
+												<form:errors path="user.staff.staff_id"
 													class="error alert alert-danger alert-error" element="div" />
 												<div class="form-group input-group">
 													<span class="input-group-addon"><i
 														class="fa fa-user"></i></span>
 													<form:input type="text" class="form-control"
-														placeholder="Staff ID" path="staff_id" />
+														placeholder="Staff ID" path="user.staff.staff_id" />
 												</div>
 
 											</div>
@@ -80,16 +84,25 @@
 											</div>
 											<div class="panel-body">
 
-												<form:errors path="name"
+												<form:errors path="user.staff.fullName_en"
 													class="error alert alert-danger alert-error" element="div" />
 												<div class="form-group input-group">
 													<span class="input-group-addon"><i
 														class="fa fa-circle-o-notch glyphicon glyphicon-user"></i></span>
 													<form:input type="text" class="form-control"
-														placeholder="Name" path="name" />
+														placeholder="Name" path="user.staff.fullName_en" />
 												</div>
 
-												<form:errors path="gender"
+												<form:errors path="user.staff.fullName_ar"
+													class="error alert alert-danger alert-error" element="div" />
+												<div class="form-group input-group">
+													<span class="input-group-addon"><i
+														class="fa fa-circle-o-notch glyphicon glyphicon-user"></i></span>
+													<form:input type="text" class="form-control"
+														placeholder="Name (Arabic)" path="user.staff.fullName_ar" />
+												</div>
+
+												<form:errors path="user.staff.gender"
 													class="error alert alert-danger alert-error" element="div" />
 												<div class="form-group input-group">
 													<span class="input-group-addon"><i
@@ -98,12 +111,10 @@
 
 
 													<div class="btn-group" data-toggle="buttons">
-														<label class="btn btn-default active"> <input
-															type="radio" name="options" id="option1"
-															autocomplete="off" checked> Male
-														</label> <label class="btn btn-default"> <input
-															type="radio" name="options" id="option2"
-															autocomplete="off"> Female
+														<label class="btn btn-default active"> 
+														<form:radiobutton path ="user.staff.gender" value="male" /> Male
+														</label> <label class="btn btn-default"> 
+														<form:radiobutton path ="user.staff.gender" value="female" /> Female
 														</label>
 
 													</div>
@@ -121,35 +132,35 @@
 
 													<div class="btn-group" data-toggle="buttons">
 														<label class="btn btn-default active" id="married_true">
-															<input type="radio" name="married" id="true"
-															autocomplete="off" checked> Married
+															<form:radiobutton path="user.staff.status"  value="married"/> Married
 														</label> <label class="btn btn-default" id="married_false">
-															<input type="radio" name="married" id="false"
-															autocomplete="off"> Single
+															
+															<form:radiobutton path="user.staff.status"  value="single"/> Single
 														</label>
 
 													</div>
 
 												</div>
 
-												<hr>
-												<form:errors path="dob"
+												<hr><%-- 
+												<form:errors path="user.staff.dob"
 													class="error alert alert-danger alert-error" element="div" />
 												<div class="form-group input-group fuelux">
 													<span class="input-group-addon"><i
 														class="fa fa-calendar-o"></i></span>
 
 													<form:input type="text" class="form-control"
-														placeholder="Date of Birth" path="dob" />
+														placeholder="Date of Birth" path="user.staff.dob" />
 
-												</div>
+												</div> --%>
 
 
 												<div class="form-group input-group">
 
 													<span class="input-group-addon"><i
-														class="fa fa-globe"></i></span> <select
-														class="combobox form-control" style="display: none;">
+														class="fa fa-globe"></i></span> 
+														<form:select
+														class="combobox form-control" style="display: none;" path="user.staff.nationality" >
 														<option value="" selected="selected">Nationality</option>
 														<option value="Afghanistan">Afghanistan</option>
 														<option value="Albania">Albania</option>
@@ -427,14 +438,16 @@
 														<option value="Zambia">Zambia</option>
 														<option value="Zimbabwe">Zimbabwe</option>
 
-													</select>
+													</form:select>
 												</div>
 
 
+
+<%-- 
 												<div class="form-group input-group">
 													<span class="input-group-addon"><i
 														class="fa fa-flag"></i></span> <input type="text"
-														class="form-control" placeholder="Home Town">
+														class="form-control" placeholder="Live in" name="staff.live_in">
 												</div>
 
 												<hr>
@@ -442,9 +455,9 @@
 												<div class="form-group input-group">
 													<span class="input-group-addon"><i
 														class="fa fa-plus-square"></i></span> <input type="text"
-														class="form-control" placeholder="ID Number">
+														class="form-control" placeholder="ID Number" name="staff.id_number">
 												</div>
-
+<!-- 
 												<div class="form-group input-group">
 													<span class="input-group-addon"><i
 														class="fa fa-plus-square"></i></span> <input type="text"
@@ -459,7 +472,7 @@
 														type="text" class="form-control"
 														placeholder="Passport Expiry Date">
 												</div>
-
+ -->
 
 											</div>
 										</div>
@@ -484,10 +497,38 @@
 														type="text" class="form-control" placeholder="Join on">
 												</div>
 
+
+
+												<div class="form-group input-group">
+
+											<span class="input-group-addon"><i
+														class="fa fa-level-up"></i></span> <select
+														class="combobox form-control" style="display: none;">
+														<option value="" selected="selected">Grade</option>
+														<option value='M1'>M1</option>
+														<option value='M2'>M2</option>
+														<option value='M3'>M3</option>
+														<option value='M4'>M4</option>
+														<option value='M5'>M5</option>
+														<option value='S1'>S1</option>
+														<option value='S2'>S2</option>
+														<option value='S3'>S3</option>
+														<option value='S4'>S4</option>
+														<option value='S5'>S5</option>
+														<option value='S6'>S6</option>
+														<option value='S7'>S7</option>
+														<option value='S8'>S8</option>
+														<option value='SP'>SP</option>
+														<option value='Z'>Z</option>
+
+														</select>
+														
+														</div>
+														
 												<div class="form-group input-group">
 													<span class="input-group-addon"><i
 														class="fa fa-level-up"></i></span> <input type="text"
-														class="form-control" placeholder="Grade">
+														class="form-control" placeholder="grade">
 												</div>
 
 												<div class="form-group input-group">
@@ -501,8 +542,13 @@
 
 													<span class="input-group-addon"><i
 														class="fa fa-th-large"></i></span> <select
-														class="combobox form-control" style="display: none;">
+														class="combobox form-control" style="display: none;" name="staff.department">
 														<option value="" selected="selected">Department</option>
+														
+														<c:forEach var="dep" items="${depts}">
+															<option value="${dep.getDepartment_id()}">${dep.getName_en()}</option>
+														</c:forEach>
+														
 														<option value="Afghanistan">Information
 															Technology</option>
 														<option value="Albania">Human Resources</option>
@@ -516,12 +562,13 @@
 
 													<span class="input-group-addon"><i
 														class="fa fa-user"></i></span> <select
-														class="combobox form-control" style="display: none;">
-														<option value="" selected="selected">Direct
-															Manager</option>
-														<option value="Afghanistan">Osman Issa</option>
-														<option value="Albania">Nasser Salman</option>
-														<option value="Algeria">Omar Issa</option>
+														class="combobox form-control" style="display: none;" name = "staff.manager" path="staff.manager">
+														
+															
+														<c:forEach var="stf" items="${staffs}">
+															<option value="${stf.getStaff_id()}">${stf.getFullName_en()}</option>
+														</c:forEach>
+														
 													</select>
 												</div>
 
@@ -550,14 +597,21 @@
 												<div class="form-group input-group">
 													<span class="input-group-addon"><i
 														class="fa fa-phone"></i></span> <input type="text"
-														class="form-control" placeholder="Telephone">
+														class="form-control" placeholder="Telephone" name="telephone">
 												</div>
 
 
 												<div class="form-group input-group">
 													<span class="input-group-addon"><i
 														class="fa fa-mobile"></i></span> <input type="text"
-														class="form-control" placeholder="Mobile">
+														class="form-control" placeholder="Mobile" name="mobile">
+												</div>
+
+
+												<div class="form-group input-group">
+													<span class="input-group-addon"><i
+														class="fa fa-mobile"></i></span> <input type="text"
+														class="form-control" placeholder="CPN" name="cpn">
 												</div>
 
 
@@ -568,15 +622,17 @@
 													<span class="input-group-addon"><i
 														class="fa fa-check-square-o"></i></span>
 
-
+ --%>
 
 													<div class="btn-group" data-toggle="buttons">
-														<label class="btn btn-default active"> <input
-															type="radio" name="options" id="option1"
-															autocomplete="off" checked> Enable
-														</label> <label class="btn btn-default"> <input
-															type="radio" name="options" id="option2"
-															autocomplete="off"> Disable
+														<label class="btn btn-default active"> 
+														<form:radiobutton path="user.enabled"  name="user.enabled" id="option1"
+															autocomplete="off" checked="checked" value="true" /> Enable
+														</label> 
+														
+														<label class="btn btn-default"> 
+														<form:radiobutton  id="option2"
+															autocomplete="off"  value="false" path="user.enabled" name="user.enabled"/> Disable
 														</label>
 
 													</div>
@@ -604,7 +660,7 @@
 								Publish <span class="glyphicon glyphicon-send"></span>
 							</button>
 
-							</form:form>
+							</form>
 
 						</p>
 					</section>
@@ -631,19 +687,19 @@
 	
 </script>
 
-<script src="./resources/js/bootstrap-combobox.js"
+<script src="./resources/js/bootstrap-combobox.min.js"
 	type="text/javascript">
 	
 </script>
-
+<!-- 
 <script src="./resources/js/jquery.uploadfile.min.js"
 	type="text/javascript">
 	
-</script>
-
+</script> -->
+<!-- 
 <script src="./resources/js/jquery.steps.min.js" type="text/javascript">
 	
-</script>
+</script> -->
 
 
 

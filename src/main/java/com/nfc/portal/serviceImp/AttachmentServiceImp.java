@@ -7,8 +7,8 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nfc.portal.entity.Attachment;
-import com.nfc.portal.entity.AttachmentFile;
+import com.nfc.portal.entity.A1Attachment;
+import com.nfc.portal.entity.A1AttachmentFile;
 import com.nfc.portal.helper.CheckSum;
 import com.nfc.portal.repository.AttachmentFileRepository;
 import com.nfc.portal.repository.AttachmentRepository;
@@ -27,7 +27,7 @@ public class AttachmentServiceImp implements AttachmentService {
 	
 	
 	@Override
-	public Long upload(Attachment attachment, AttachmentFile attachmentFile) {
+	public Long upload(A1Attachment attachment, A1AttachmentFile attachmentFile) {
 
 		CheckSum cs = new CheckSum();
 
@@ -99,7 +99,7 @@ public class AttachmentServiceImp implements AttachmentService {
 	@Override
 	public void assign(String[] attachment_ids,String relation,Long relation_id) {
 		for(int x =0 ; x< attachment_ids.length;x++){
-			Attachment attch = new Attachment();
+			A1Attachment attch = new A1Attachment();
 			attch = attachmentRepository.findOne(Long.parseLong(attachment_ids[x]));
 			attch.setRelation(relation);
 			attch.setRelation_id(relation_id);
@@ -118,11 +118,11 @@ public class AttachmentServiceImp implements AttachmentService {
 	}
 
 	
-	public AttachmentFile findAttachmentFileByAttachmentId(Attachment attachment) {
+	public A1AttachmentFile findAttachmentFileByAttachmentId(A1Attachment attachment) {
 		return attachmentFileRepository.findByAttachment_id(attachment);
 	}
 
-	public Attachment findByAttachmentID(Long AttachmentID){
+	public A1Attachment findByAttachmentID(Long AttachmentID){
 		
 		return attachmentRepository.findOne(AttachmentID);
 	}

@@ -29,9 +29,10 @@ public class Department {
 
 
 	private int department_id;
-	private String name;
+	private String name_en;
+	private String name_ar;
 	private String description;
-	private User head;
+	private Staff head;
 	private String code;
 	private byte[] icon;
 	
@@ -60,14 +61,32 @@ public class Department {
 	public void setDepartment_id(int department_id) {
 		this.department_id = department_id;
 	}
+
 	
-	@Column(name="name")
-	public String getName() {
-		return name;
+	
+	
+	
+	
+
+	@Column(name="name_en")
+	public String getName_en() {
+		return name_en;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setName_en(String name_en) {
+		this.name_en = name_en;
 	}
+	 
+	
+
+	@Column(name="name_ar")
+	public String getName_ar() {
+		return name_ar;
+	}
+	public void setName_ar(String name_ar) {
+		this.name_ar = name_ar;
+	}
+	
+	
 	
 	@Column(name="description")
 	public String getDescription() {
@@ -91,12 +110,12 @@ public class Department {
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "head_id", nullable = false)
+	@JoinColumn(name = "head_id", nullable = true)
 	
-	public User getHead() {
+	public Staff getHead() {
 		return head;
 	}
-	public void setHead(User head) {
+	public void setHead(Staff head) {
 		this.head = head;
 	}
 	@OneToOne(fetch=FetchType.LAZY)

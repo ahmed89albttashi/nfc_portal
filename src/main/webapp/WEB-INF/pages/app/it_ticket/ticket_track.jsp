@@ -84,26 +84,26 @@
         </div>
     </script>
 
-    
-    
+
+
 <div class="row">
 
 
 	<hr>
 	<div class="col-md-10 col-xs-10">
-			<i class="fa fa-edit"></i>
-			<spring:message code="a.it_ticket.ticket" />
-			: <span> <b> ${ticket.getTitle()} </b></span>
-			
-			<%-- ${ticket.getDetail()}  --%>
-		
+		<i class="fa fa-edit"></i>
+		<spring:message code="a.it_ticket.ticket" />
+		: <span> <b> ${ticket.getTitle()} </b></span>
+
+		<%-- ${ticket.getDetail()}  --%>
 
 
-	
-	
 
-	<!-- Tracks -->
-	<c:forEach var="a" items="${tracks}">
+
+
+
+		<!-- Tracks -->
+		<c:forEach var="a" items="${tracks}">
 
 
 			<div class="col-md-12 col-xs-12 a1track_each ">
@@ -111,8 +111,8 @@
 
 				<div class="a1track_each_head text-muted">
 					<spring:message code="a.it_ticket.status" />
-					: <b> <spring:message code="a.it_ticket.status.${a.getTrack()}" /> 
-					
+					: <b> <spring:message code="a.it_ticket.status.${a.getTrack()}" />
+
 					</b>
 					<div style="float: right;">
 						<i class="fa fa-edit"></i> : <small> ${fn:substring( {a.getChanged_on()},
@@ -121,67 +121,77 @@
 					</div>
 					<br> <small><spring:message
 							code="a.it_ticket.track.by" /></small> : <i>
-						${a.getCreated_by().getName() } </i>
+						${a.getCreated_by().getStaff().getFullName_en() } </i>
 				</div>
 				<hr>
 				<div class="text-primary">
 					${a.getDetail()} <br>
 
 				</div>
-				
-				
+
+
 				<c:if test="${fn:length(a.getAttachment()) gt 0}">
-				<div class="text-muted">
-				<hr>
-				<div class="text-primary"> <spring:message code="gen.attachments" />   </div>
-				
-				<ol>
-					<c:forEach items="${a.getAttachment()}" var="attch" >
-					<li> <a target="_blank" href="./a/itTicket/track/download_attch/${attch.getAttachment_id()}">${attch.getSf_name()}</a></li>
-					</c:forEach>
-					</ol>
-				</div>
-				
+					<div class="text-muted">
+						<hr>
+						<div class="text-primary">
+							<spring:message code="gen.attachments" />
+						</div>
+
+						<ol>
+							<c:forEach items="${a.getAttachment()}" var="attch">
+								<li><a target="_blank"
+									href="./a/itTicket/track/download_attch/${attch.getAttachment_id()}">${attch.getSf_name()}</a></li>
+							</c:forEach>
+						</ol>
+					</div>
+
 				</c:if>
-				
 
 
 
-		</div>
+
+			</div>
+			<br>
+
+		</c:forEach>
+	</div>
+
+
+	<br> <br> <br>
+	<div class="col-md-2 col-xs-2 well ">
+		<spring:message code="a.it_ticket.id" />
+		:
+		<pre> ${ticket.getA1_ticket_ticket_id()} </pre>
 		<br>
-
-	</c:forEach>
-</div>
-
-
-<br><br><br>
-<div class="col-md-2 col-xs-2 well ">
-<spring:message code="a.it_ticket.id" /> : <pre> ${ticket.getA1_ticket_ticket_id()} </pre> <br> 
 		<spring:message code="a.it_ticket.track.by" />
-		: ${ticket.getCreated_by().getName()}
-		
-		
+		: ${ticket.getCreated_by().getStaff().getFullName_en()}
+
+
 
 		<hr>
 
 
 		<h6>
 			<spring:message code="gen.created_on" />
-			:  <small> <c:out
+			: <small> <c:out
 					value="${fn:substring( {ticket.getCreated_on()}, 1, 17)}" /></small> <br>
 
 			<spring:message code="gen.last_update" />
-			:  <small> <c:out
+			: <small> <c:out
 					value="${fn:substring( {ticket.getChanged_on()}, 1, 17)}" />
 			</small>
 
 		</h6>
-<hr>
-<h6><spring:message code="a.it_ticket.trackers_list" /> : </h6>
-	<c:forEach items="${involvedTracker}" var="it">
-		<i class="fa fa-user" aria-hidden="true"> <small>${it.getTracker_id().getName()}  </small></i>
-	</c:forEach>
-<br> <br>
+		<hr>
+		<h6>
+			<spring:message code="a.it_ticket.trackers_list" />
+			:
+		</h6>
+		<c:forEach items="${involvedTracker}" var="it">
+			<i class="fa fa-user" aria-hidden="true"> <small>${it.getTracker_id().getFullName_en()}
+			</small></i>
+		</c:forEach>
+		<br> <br>
 	</div>
 
 
@@ -193,12 +203,12 @@
 		<div class="col-md-12 col-xs-12 edit-block ">
 
 
-			<br>
-			<br>
-			<br>
-			<br>
+			<br> <br> <br> <br>
 
-			<h4><spring:message code="a.it_ticket.track.new" /></h4>
+			<h4>
+				<spring:message code="a.it_ticket.track.new" />
+			</h4>
+			<%-- 
 			<div class="form-group col-xs-8">
 				<label> <spring:message code="a.it_ticket.status" />
 				</label> <select class="form-control " name="track" id="track">
@@ -224,51 +234,99 @@
 						<spring:message code="a.it_ticket.status.closed" />
 					</option>
 				</select>
-				
-				<hr>
-				<div id="assigned_form" style="display: none;">
-				<label>Assigned to </label>
-				<select name="trackers" multiple="multiple" class="form-control">
-				<c:forEach items="${it_staff}" var="staff">
-				  	<option value="${staff.getUser_id() }" > ${staff.getName() } </option>
-				</c:forEach>
-				
-				</select>
-				</div>
-			</div>
 
-			<div class="form-group col-xs-12">
-			
-			
-				<button type="button" class="btn btn-default"><spring:message code="a.it_ticket.status.assigned" /></button>
-				<button type="button" class="btn btn-default"><spring:message code="a.it_ticket.status.in_progress" /></button>
-				<button type="button" class="btn btn-default"><spring:message code="a.it_ticket.status.info_request" /></button>
-				<hr>
-				<button type="button" class="btn btn-default"><spring:message code="a.it_ticket.status.hold" /></button>
-				<button type="button" class="btn btn-default"><spring:message code="a.it_ticket.status.solved" /></button>
-				<button type="button" class="btn btn-default"><spring:message code="a.it_ticket.status.closed" /></button> 
-				
-				
-				<textarea id="detail" name="detail" style="width: 100%" rows="15"></textarea>
-			</div>
-
-			<br> <input type="hidden" name="a1Ticket"
-				value="${ticket.getA1_ticket_ticket_id()}"> <input
-				type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-
+ --%>
 		</div>
-		<div class="col-md-12 col-xs-12 ">
-		
-<div id="fine-uploader-gallery"></div> 
-											<br>
-			<button id="track_submit" class="btn btn-lg btn-primary ">
-				<spring:message code="tmplt.hdr.submit" />
-				<span class="glyphicon glyphicon-send"></span>
+
+		<div class="form-group col-xs-12">
+
+
+			<sec:authorize access="@a1SecurityService.canAccessAdmin(authentication)">
+				<button type="button" class="btn btn-default track-btns"
+					btn_action="assigned">
+					<span class="fa fa-user-plus"></span>
+					<spring:message code="a.it_ticket.status.assigned.btn" />
+				</button>
+				<button type="button" class="btn btn-default track-btns"
+					btn_action="in_progress">
+					<span class="fa fa-tasks"></span>
+					<spring:message code="a.it_ticket.status.in_progress.btn" />
+				</button>
+				<button type="button" class="btn btn-default track-btns"
+					btn_action="info_request">
+					<span class="fa fa-info-circle"></span>
+					<spring:message code="a.it_ticket.status.info_request.btn" />
+				</button>
+				<hr>
+				<button type="button" class="btn btn-default track-btns"
+					btn_action="hold">
+
+					<span class="fa fa-thumb-tack"></span>
+					<spring:message code="a.it_ticket.status.hold.btn" />
+				</button>
+				<button type="button" class="btn btn-default track-btns"
+					btn_action="solved">
+					<span class="fa fa-check-square"></span>
+					<spring:message code="a.it_ticket.status.solved.btn" />
+				</button>
+					<button type="button" class="btn btn-default track-btns" btn_action="closed">
+				<span class="fa fa-folder"></span>
+				<spring:message code="a.it_ticket.status.closed.btn" />
+				
 			</button>
-		</div>
+				
+
+			</sec:authorize>
+		
+		
+			<sec:authorize access="!@a1SecurityService.canAccessAdmin(authentication)">
+			<button type="button" class="btn btn-default track-btns"
+					btn_action="in_progress">
+					<span class="fa fa-tasks"></span>
+					<spring:message code="a.it_ticket.status.in_progress.btn" />
+				</button>
+					<button type="button" class="btn btn-default track-btns" btn_action="closed">
+				<span class="fa fa-folder"></span>
+				<spring:message code="a.it_ticket.status.closed.btn" />
+				</button>
+			</sec:authorize>
+			<hr>
+			<div id="assigned_form" style="display: none;">
+				<label>Assigned to </label> <select name="trackers"
+					multiple="multiple" class="form-control">
+					<c:forEach items="${it_staff}" var="staff">
+						<option value="${staff.getStaff_id() }">${staff.getFullName_en() }</option>
+					</c:forEach>
+
+				</select>
+			</div>
 
 
+			<div id="hidden_form" style="display: none;">
+				<textarea id="detail" name="detail" style="width: 100%" rows="15"></textarea>
+
+
+
+				<br> <input type="hidden" name="a1Ticket"
+					value="${ticket.getA1_ticket_ticket_id()}"> <input
+					type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
+				<input type="hidden" name="track" id="track" value="">
+
+
+				<div class="col-md-12 col-xs-12 ">
+
+					<div id="fine-uploader-gallery"></div>
+					<br>
+					<button id="track_submit" class="btn btn-lg btn-primary ">
+						<spring:message code="tmplt.hdr.submit" />
+						<span class="glyphicon glyphicon-send"></span>
+					</button>
+				</div>
 	</form>
+</div>
+
+</div>
 
 </div>
 <script type="text/javascript">
@@ -302,13 +360,25 @@
 			
 		});
 		
-		$("#track").on('change', function() {
-		    if ($(this).val() == 'assigned'){
+		$(".track-btns").on('click', function() {
+			//alert($(this).attr("btn_action"));
+			$("#track").val($(this).attr("btn_action"));
+			
+		    $(this).addClass("active btn-lg").siblings().removeClass("active btn-lg");
+			
+			
+		    if ($(this).attr("btn_action") == 'assigned'){
 		        $("#assigned_form").show();
 		    } else {
 		    	$("#assigned_form").hide();
 		    }
+		    
+		    $("#hidden_form").show(10);
 		});
+	});
+	
+
+	$(function() {
 	});
 </script>
 

@@ -29,9 +29,9 @@ public class A1Track {
 	public A1Ticket a1Ticket;
 	public String track;
 	public String detail;
-	public User tracker;
+	public Staff tracker;
 
-	public Set<Attachment> attachment = new  HashSet<Attachment>(0);
+	public Set<A1Attachment> attachment = new  HashSet<A1Attachment>(0);
 
 	public User created_by;
 	public Date created_on;
@@ -51,7 +51,7 @@ public class A1Track {
 		this.a1Track_id = a1Track_id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
 	@JoinColumn(name = "ticket_id")
 	public A1Ticket getA1Ticket() {
 		return a1Ticket;
@@ -123,11 +123,11 @@ public class A1Track {
 
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "tracker_id")
-	public User getTracker() {
+	public Staff getTracker() {
 		return tracker;
 	}
 
-	public void setTracker(User tracker) {
+	public void setTracker(Staff tracker) {
 		this.tracker = tracker;
 	}
 
@@ -142,11 +142,11 @@ public class A1Track {
 	
 
 	@OneToMany(mappedBy="related")
-	public Set<Attachment> getAttachment() {
+	public Set<A1Attachment> getAttachment() {
 		return attachment;
 	}
 
-	public void setAttachment(Set<Attachment> attachment) {
+	public void setAttachment(Set<A1Attachment> attachment) {
 		this.attachment = attachment;
 	}
 	

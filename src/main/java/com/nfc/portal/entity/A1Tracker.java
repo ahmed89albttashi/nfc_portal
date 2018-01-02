@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -22,7 +23,7 @@ import javax.persistence.UniqueConstraint;
 public class A1Tracker {
 	public Long a1_tracker_tracker_id;
 	public A1Ticket ticket_id;
-	public User tracker_id;
+	public Staff tracker_id;
 
 	public User created_by;
 	public Date created_on;
@@ -42,7 +43,7 @@ public class A1Tracker {
 		this.a1_tracker_tracker_id = a1_tracker_tracker_id;
 	}
 
-	@OneToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
 	@JoinColumn(name = "ticket_id")
 	public A1Ticket getTicket_id() {
 		return ticket_id;
@@ -54,11 +55,11 @@ public class A1Tracker {
 
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "tracker_id")
-	public User getTracker_id() {
+	public Staff getTracker_id() {
 		return tracker_id;
 	}
 
-	public void setTracker_id(User tracker_id) {
+	public void setTracker_id(Staff tracker_id) {
 		this.tracker_id = tracker_id;
 	}
 

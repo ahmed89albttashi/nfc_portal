@@ -28,7 +28,9 @@ public interface A1TrackService {
 	public List getLatestTenByTrack(String track);
 
 	public List<A1Tracker> findTrackersByTicket(A1Ticket a1Ticket);
-	
+
 	public List<A1Track> findTicketsByTrack(String track);
+	
+	public List<A1Track> trackReport();
 	
 }

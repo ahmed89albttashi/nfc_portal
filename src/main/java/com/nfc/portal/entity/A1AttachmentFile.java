@@ -18,8 +18,8 @@ import javax.persistence.UniqueConstraint;
 
 
 @Entity
-@Table(name="a_attachment_files",catalog="public",uniqueConstraints={@UniqueConstraint(columnNames= "attachment_file_id")})
-public class AttachmentFile {
+@Table(name="a1_attachment_files",catalog="public",uniqueConstraints={@UniqueConstraint(columnNames= "attachment_file_id")})
+public class A1AttachmentFile {
 	
 
 	@Id
@@ -39,7 +39,7 @@ public class AttachmentFile {
 
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="attachment_id")
-	private Attachment attachment;
+	private A1Attachment attachment;
 	
 	/*Audit*/
 	
@@ -82,11 +82,11 @@ public class AttachmentFile {
 		this.data = data;
 	}
 
-	public Attachment getAttachment() {
+	public A1Attachment getAttachment() {
 		return attachment;
 	}
 
-	public void setAttachment(Attachment attachment) {
+	public void setAttachment(A1Attachment attachment) {
 		this.attachment = attachment;
 	}
 

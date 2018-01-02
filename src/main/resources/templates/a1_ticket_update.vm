@@ -1,0 +1,112 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;CHARSET=UTF-8">
+
+</head>
+	<body>
+	<center>
+	<img src="cid:rid1" >
+	</center>
+
+
+		
+		
+		<table style="background:#0078A3; text-align: center; " width="100%">
+		<tr >
+		<td width="50%" style="color:  #fff ;font-size: x-large;" > NFC Portal :: Welcome in Portal 
+		</td> 
+		
+
+		<td width="50%"  style="color:  #fff ;font-size: x-large;">بوابة الشركة الوطنية للعبارات
+		</td>
+		
+		</tr>
+		</table>
+		
+		
+		<table>
+		<tr>
+		<td  width="50%" style=" padding-left:10px;  background-color:#FFF4F0; border-style: solid;border-width: 5px; border-color:#00435C;border-radius: 5px; padding:5px;">
+		
+<h3> <i>Ticket updated  No :: ${ticket.getA1_ticket_ticket_id()} </i></h3>
+		  
+		  		  <hr>
+Greetings , <br>
+Ticket : <i> <b>
+${ticket.getTitle()} </b>
+</i> has been updated. <br>
+by:
+ ${updated_by}  
+<br>
+
+Current status : 
+<b>
+${status_en}
+</b>
+<hr>
+tracking all updates on <br>
+
+
+Ticket link
+
+		<a href="${baseUrl}a/itTicket/track/${ticket.getA1_ticket_ticket_id()}/">
+Internal link
+		</a> || 
+		<a href="http://85.154.229.6:8080/a/itTicket/track/${ticket.getA1_ticket_ticket_id()}/">
+External link
+		</a>. 
+		
+		</td>
+		<td>|</td>
+		<td  width="50%" style=" padding-right:20px;  background-color:#FFF4F0; border-style: solid;border-width: 5px; border-color:#00435C; padding:5px; text-align:right;border-radius: 5px;direction: rtl;">
+		<h3> <i>تم تحديث المذكرة رقم  :: ${ticket.getA1_ticket_ticket_id()} </i></h3>
+		  <hr>
+		  		
+تحية طيبة <br>
+<br>
+
+لقد تم تحديث مذكرة   <i><b>
+${ticket.getTitle()}
+</b></i> 
+<br>
+ بواسطة : <i>
+ ${updated_by}  
+ </i>  
+<br>
+
+الوضع الحالي: 
+<b>
+${status_ar}
+</b>
+<hr>
+لمتابعة التحديثات إدخل على الرابط    <br>
+
+
+
+		<a href="${baseUrl}a/itTicket/track/${ticket.getA1_ticket_ticket_id()}/">
+الرابط الداخلي
+		</a> || 
+		<a href="http://85.154.229.6:8080/a/itTicket/track/${ticket.getA1_ticket_ticket_id()}/">
+الرابط الخارجي
+		</a>. 
+		</td>
+		</tr>
+		</table>
+		<hr>
+			
+			<p style="text-style:italic; font-size:x-small;" align="center">
+			هذه رسالة تلقائية  | لأي أستفسار رجاء  التواصل مع  <a href="mailto:it@nfc.om"><b> قسم تقنية المعلومات</b></a>
+			<br>
+			This Email Auto-generated | For enquiries please contact with <a href="mailto:it@nfc.om"><b>IT Department</b></a>
+			</p>
+			
+			<P style="text-style:italic; font-size:small;" align="center">
+			بوابة الشركة الوطنية للعبارات
+			<br>
+			
+			NFC Portal
+			</P>
+
+	</body>
+ 
+</html>

@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +12,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -42,17 +40,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nfc.portal.entity.A1Ticket;
 import com.nfc.portal.entity.A1Track;
 import com.nfc.portal.entity.A1Tracker;
-import com.nfc.portal.entity.Attachment;
-import com.nfc.portal.entity.AttachmentFile;
+import com.nfc.portal.entity.A1Attachment;
+import com.nfc.portal.entity.A1AttachmentFile;
 import com.nfc.portal.entity.Department;
+import com.nfc.portal.entity.Staff;
 import com.nfc.portal.entity.User;
 import com.nfc.portal.helper.CheckSum;
-import com.nfc.portal.module.Mailer;
+import com.nfc.portal.module.MailService;
+import com.nfc.portal.module.Messages;
 import com.nfc.portal.module.PortalMessage;
 import com.nfc.portal.service.A1TicketService;
 import com.nfc.portal.service.A1TrackService;
 import com.nfc.portal.service.AttachmentService;
 import com.nfc.portal.service.DepartmentService;
+import com.nfc.portal.service.StaffService;
 import com.nfc.portal.service.UserService;
 
 @Controller
@@ -65,8 +66,7 @@ public class A1TricketController {
 	A1TrackService a1TrackService;
 
 	@Autowired
-	Mailer mailService;
-	Mailer mailer;
+	MailService mailService;
 
 	@Value("${app.baseUrl}")
 	private String baseUrl;
@@ -75,10 +75,16 @@ public class A1TricketController {
 	UserService userService;
 
 	@Autowired
+	StaffService staffService;
+
+	@Autowired
 	DepartmentService departmentService;
 
 	@Autowired
 	AttachmentService attachmentService;
+
+	@Autowired
+	Messages messages;
 
 	String[][] df_pg_menu = new String[][] { { "a.it_ticket.create", "./a/itTicket/create/" },
 			{ "a.it_ticket.my_tickets", "./a/itTicket/my_tickets" }, { "gen.administration", "./a/itTicket/admin" } };
@@ -105,10 +111,13 @@ public class A1TricketController {
 	public ModelAndView create(ModelAndView mv) {
 		A1Ticket a_IT_Ticket = new A1Ticket();
 
-		// dropzone
+		List<Department> deps = departmentService.finAll();
+		System.out.println("deps 1 size " + deps.get(0).getStaff().size());
+		System.out.println("deps size " + deps.size());
 
-		mv.addObject("js_add", new String[] { "dropzone.js" });
-		mv.addObject("pg_css_items", new String[] { "fine-uploader-new.min.css" });
+		mv.addObject("deps", deps);
+		mv.addObject("js_add", new String[] { "dropzone.js", "chosen.jquery.js" });
+		mv.addObject("pg_css_items", new String[] { "fine-uploader-new.min.css", "bootstrap-chosen.css" });
 		mv.addObject("a_IT_Ticket", a_IT_Ticket);
 		mv.addObject("pg_hd", "a.it_ticket.create");
 		mv.addObject("pg_nav", new String[][] { { "tmplt.nav.home", "./" }, { "tmplt.apps.it_ticket", "./a/itTicket/" },
@@ -150,30 +159,37 @@ public class A1TricketController {
 			// bring track ID to link with attachment
 			A1Track savedTrack = a1TrackService.create(a1Track);
 
-			// check if there is uploads before start record in attavhment
+			// check if there is uploads before start record in attachment
 			// tables
 			if (uploads != null && uploads.length > 0)
 				attachmentService.assign(uploads, "track", savedTrack.getA1Track_id());
 
 			PortalMessage pm = new PortalMessage();
-			pm.setSubject("New Ticket Created || أنشأت مذكرة جديدة");
-			pm.setTo(new ArrayList<>(Arrays.asList(logged_user.getEmail(), "ahmed.battashi@nfc.om")));
+			pm.setSubject("New Ticket || مذكرة جديدة");
+
+			ArrayList<String> cc = new ArrayList<String>();
+			for (Staff s : a_IT_Ticket.getRecipients()) {
+				cc.add(s.getUser().getEmail());
+			}
+			cc.add(logged_user.getEmail());
+			cc.add("it@nfc.om");
+			// cc.addAll(a_IT_Ticket.getRecipients().toArray());
+			pm.setTo(cc);
+
 			pm.setTemplate("a_it_ticket_create");
-			String randString = RandomStringUtils.random(6, false, true);
+			Staff Logged_staff = logged_user.getStaff();
 			pm.setMessageDetail(new HashMap<String, Object>() {
 				{
 					put("user", logged_user);
+					put("staff", Logged_staff.getFullName_en());
 					put("baseUrl", baseUrl);
 					put("ticket", a_IT_Ticket);
 				}
 			});
 
-			try {
-				mailService.send(pm);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			// mailService = new Mailer();
+			mailService.setPortalMessage(pm);
+			mailService.sendMail();
 
 			mv.setViewName("redirect:/a/itTicket/create/done");
 
@@ -202,28 +218,7 @@ public class A1TricketController {
 		return mv;
 	}
 
-	// not used
-	// to removed after checking
-	@RequestMapping(value = "/track", method = RequestMethod.GET)
-	public ModelAndView ticket_track(ModelAndView mv, @RequestParam("ticket_id") Long ticket_id) {
-		A1Ticket a_IT_Ticket = new A1Ticket();
-		a_IT_Ticket.setA1_ticket_ticket_id(ticket_id);
-		A1Ticket ex_ticket = a1TicketService.get(a_IT_Ticket).get(0);
-
-		mv.addObject("ticket", ex_ticket);
-		mv.addObject("pg_hd", "admin.create");
-		mv.addObject("pg_nav", new String[][] { { "tmplt.nav.home", "./" }, { "tmplt.apps.it_ticket", "./a/itTicket/" },
-				{ "a.it_ticket.create", "" } });
-		mv.addObject("pg_app_name", "tmplt.apps.it_ticket");
-		mv.addObject("pg_hd", "admin.create");
-
-		mv.addObject("js_add", new String[] { "tinymce.min.js" });
-		mv.addObject("pg_menu", this.getPgMenu());
-		mv.setViewName("app/it_ticket/ticket_track");
-		return mv;
-	}
-
-	@PreAuthorize("hasRole('IT') or @a1SecurityService.canAccessTrack(authentication,#ticket_id)")
+	@PreAuthorize("@a1SecurityService.canAccessTrack(authentication,#ticket_id)")
 	@RequestMapping(value = "/track/{ticket_id}/", method = RequestMethod.GET)
 	public ModelAndView ticket_track_div(ModelAndView mv, @PathVariable Long ticket_id) {
 		Collection<SimpleGrantedAuthority> authorities = (Collection<SimpleGrantedAuthority>) SecurityContextHolder
@@ -240,7 +235,7 @@ public class A1TricketController {
 
 		Department it_dept = departmentService.findByCode("IT");
 
-		List<User> it_staff = userService.getUserByDepartment(it_dept);
+		List<Staff> it_staff = staffService.getStaffByDepartment(it_dept);
 
 		/*
 		 * for(User tr:it_staff){ System.out.println("USER : >> "+tr); }
@@ -254,7 +249,7 @@ public class A1TricketController {
 
 		mv.addObject("pg_hd", "a.it_ticket.track");
 		mv.addObject("pg_nav", new String[][] { { "tmplt.nav.home", "./" }, { "tmplt.apps.it_ticket", "./a/itTicket/" },
-				{ "a.it_ticket.create", "" } });
+				{ "a.it_ticket.track", "" } });
 		mv.addObject("pg_app_name", "tmplt.apps.it_ticket");
 		mv.addObject("pg_hd", "a.it_ticket.track");
 		mv.addObject("pg_menu", this.getPgMenu());
@@ -292,7 +287,7 @@ public class A1TricketController {
 			for (String i : trackers) {
 				// System.out.println(" I "+i);
 
-				User tr = userService.getUserById(Long.parseLong(i));
+				Staff tr = staffService.getStaffById(Long.parseLong(i));
 
 				A1Tracker tkr = new A1Tracker();
 				tkr.setTicket_id(ticket1);
@@ -305,24 +300,60 @@ public class A1TricketController {
 		}
 
 		// bring track ID to link with attachment
+		
 		A1Track savedTrack = a1TrackService.create(a1Track);
-
+		System.out.println("DFR");
+		System.out.println(savedTrack);
 		// check if there is uploads before start record in attavhment tables
 		if (uploads != null && uploads.length > 0)
 			attachmentService.assign(uploads, "track", savedTrack.getA1Track_id());
 
 		ticket.setCreated_by(loggedUser);
-		List<A1Ticket> myTickets = a1TicketService.findByCreated_by(loggedUser);
+		//List<A1Ticket> myTickets = a1TicketService.findByCreated_by(loggedUser);
+
+		// email update
+
+		PortalMessage pm = new PortalMessage();
+
+		ArrayList<String> cc = new ArrayList<String>();
+		for (Staff s : savedTrack.getA1Ticket().getRecipients()) {
+			cc.add(s.getUser().getEmail());
+		}
+		cc.add(savedTrack.getA1Ticket().getCreated_by().getEmail());
+		cc.add(loggedUser.getEmail());
+		cc.add("it@nfc.om");
+		// cc.addAll(a_IT_Ticket.getRecipients().toArray());
+		pm.setTo(cc);
+
+		pm.setSubject(" Ticket Updated || تحديث مذكرة ");
+		// pm.setTo(new
+		// ArrayList<>(Arrays.asList(savedTrack.getCreated_by().getEmail(),
+		// "it@nfc.om")));
+		pm.setTemplate("a1_ticket_update");
+		pm.setMessageDetail(new HashMap<String, Object>() {
+			{
+				put("updated_by", savedTrack.getCreated_by().getStaff().getFullName_en());
+				put("baseUrl", baseUrl);
+				put("ticket", savedTrack.getA1Ticket());
+				put("track", savedTrack);
+				put("status_en", messages.getEn("a.it_ticket.status." + savedTrack.getTrack()));
+				put("status_ar", messages.getAr("a.it_ticket.status." + savedTrack.getTrack()));
+
+			}
+		});
+
+		mailService.setPortalMessage(pm);
+		mailService.sendMail();
 
 		mv.addObject("lu", ticket);
-		mv.addObject("tickets", myTickets);
+		//mv.addObject("tickets", myTickets);
 		mv.addObject("pg_hd", "admin.create");
 		mv.addObject("pg_nav", new String[][] { { "tmplt.nav.home", "./" }, { "tmplt.apps.it_ticket", "./a/itTicket/" },
 				{ "a.it_ticket.create", "" } });
 		mv.addObject("pg_app_name", "tmplt.apps.it_ticket");
 		mv.addObject("pg_hd", "admin.create");
 		mv.addObject("pg_menu", this.getPgMenu());
-		mv.setViewName("app/it_ticket/my_tickets");
+		mv.setViewName("redirect:/a/itTicket/my_tickets");
 		return mv;
 
 	}
@@ -335,10 +366,15 @@ public class A1TricketController {
 		String email = auth.getName();
 		User loggedUser = userService.getUserByEmail(email);
 		a_IT_Ticket.setCreated_by(loggedUser);
-		List<A1Ticket> myTickets = a1TicketService.findByCreated_by(loggedUser);
+
+		List<A1Track> tracks = a1TicketService.findByCreatedByAndTrack(loggedUser, "closed");
+		List<A1Track> not_closed_tracks = a1TicketService.findByCreatedByAndTrackNotClosed(loggedUser);
+		List<A1Ticket> to_follow = a1TicketService.findByRecipients(loggedUser.getStaff());
 
 		mv.addObject("lu", a_IT_Ticket);
-		mv.addObject("tickets", myTickets);
+		mv.addObject("closed_tracks", tracks);
+		mv.addObject("to_follow", to_follow);
+		mv.addObject("not_closed_tracks", not_closed_tracks);
 		mv.addObject("pg_hd", "a.it_ticket.my_tickets");
 		mv.addObject("pg_nav", new String[][] { { "tmplt.nav.home", "./" }, { "tmplt.apps.it_ticket", "./a/itTicket/" },
 				{ "a.it_ticket.my_tickets", "" } });
@@ -432,7 +468,8 @@ public class A1TricketController {
 		return mv;
 	}
 
-	@PreAuthorize("hasRole('IT')")
+
+	@PreAuthorize("@a1SecurityService.canAccessAdmin(authentication)")
 	@RequestMapping(value = "/admin")
 	public ModelAndView admin_main(ModelAndView mv) {
 
@@ -440,7 +477,7 @@ public class A1TricketController {
 		mv.addObject("pg_nav", new String[][] { { "tmplt.nav.home", "./" }, { "tmplt.apps.it_ticket", "./a/itTicket/" },
 				{ "a.it_ticket.admin", "" } });
 		mv.addObject("pg_app_name", "tmplt.apps.it_ticket");
-		mv.addObject("pg_hd", "admin.create");
+		mv.addObject("pg_hd", "a.it_ticket.admin");
 		mv.addObject("pg_menu", this.getPgMenu());
 		mv.addObject("stats", a1TrackService.getStatistics());
 		mv.addObject("l_new", a1TrackService.getLatestTenByTrack("new"));
@@ -462,8 +499,8 @@ public class A1TricketController {
 	public @ResponseBody Object uploadAttach(@RequestParam("qqfile") MultipartFile file,
 			@RequestParam("qqfilename") String qqfilename) throws IOException, NoSuchAlgorithmException {
 
-		Attachment attachment = new Attachment();
-		AttachmentFile attachmentFile = new AttachmentFile();
+		A1Attachment attachment = new A1Attachment();
+		A1AttachmentFile attachmentFile = new A1AttachmentFile();
 
 		// create checksum SHA1
 		CheckSum cs = new CheckSum();
@@ -504,8 +541,8 @@ public class A1TricketController {
 	@RequestMapping(value = "/track/download_attch/{id}", method = RequestMethod.GET)
 	public HttpEntity<byte[]> createFile(@PathVariable("id") Long AttachmentId) throws IOException {
 
-		Attachment id = attachmentService.findByAttachmentID(AttachmentId);
-		AttachmentFile attachmentFile = attachmentService.findAttachmentFileByAttachmentId(id);
+		A1Attachment id = attachmentService.findByAttachmentID(AttachmentId);
+		A1AttachmentFile attachmentFile = attachmentService.findAttachmentFileByAttachmentId(id);
 		byte[] buffer = attachmentFile.getData();
 
 		HttpHeaders header = new HttpHeaders();
@@ -516,7 +553,7 @@ public class A1TricketController {
 		return new HttpEntity<byte[]>(buffer, header);
 	}
 
-	@PreAuthorize("hasRole('IT')")
+	@PreAuthorize("@a1SecurityService.canAccessAdmin(authentication)")
 	@RequestMapping(value = "/admin/{ticket_status}/", method = RequestMethod.GET)
 	public ModelAndView ticket_status(ModelAndView mv, @PathVariable String ticket_status) {
 
@@ -548,10 +585,55 @@ public class A1TricketController {
 		return mv;
 	}
 
+
+
+	@PreAuthorize("@a1SecurityService.canAccessAdmin(authentication)")
+	@RequestMapping(value = "/report", method = RequestMethod.GET)
+	public ModelAndView report(ModelAndView mv) {
+		List<A1Track> tracks = a1TrackService.trackReport();
+		A1Ticket a_IT_Ticket = new A1Ticket();
+
+
+
+		mv.addObject("tracks", tracks);
+
+		mv.addObject("js_add", new String[] { "dataTables.bootstrap.min.js",
+				"jquery.dataTables.min.js",
+				"dataTables.buttons.min.js" ,
+				"buttons.flash.min.js",
+				"buttons.html5.min.js",
+				"buttons.print.min.js",
+				"jszip.min.js",
+				"pdfmake.min.js",
+				"vfs_fonts.js"
+				});
+		mv.addObject("pg_css_items", new String[] { "dataTables.bootstrap.min.css",
+				"datatables.min.css",
+				"jquery.dataTables.min.css",
+				"buttons.dataTables.min.css"});
+		
+		mv.addObject("a_IT_Ticket", a_IT_Ticket);
+		mv.addObject("pg_hd", "a.it_ticket.report");
+		mv.addObject("pg_nav", new String[][] { { "tmplt.nav.home", "./" }, { "tmplt.apps.it_ticket", "./a/itTicket/" },
+				{ "a.it_ticket.report", "" } });
+		mv.addObject("pg_app_name", "tmplt.apps.it_ticket");
+		mv.addObject("pg_hd", "a.it_ticket.report");
+		mv.addObject("pg_menu", this.getPgMenu());
+		mv.setViewName("app/it_ticket/admin_report");
+		return mv;
+	}
+	
+	
 	// generate app menu
 	public String[][] getPgMenu() {
 
-		Collection<SimpleGrantedAuthority> authorities = (Collection<SimpleGrantedAuthority>) SecurityContextHolder
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String loggedun_email = auth.getName();
+		User loged_user = userService.getUserByEmail(loggedun_email);
+
+		Staff Logged_staff = loged_user.getStaff();
+
+		/*Collection<SimpleGrantedAuthority> authorities = (Collection<SimpleGrantedAuthority>) SecurityContextHolder
 				.getContext().getAuthentication().getAuthorities();
 		boolean hasRole = false;
 
@@ -560,11 +642,12 @@ public class A1TricketController {
 			if (hasRole) {
 				break;
 			}
-		}
+		}*/
 
-		if (hasRole) {
+		if (Logged_staff.getDepartment().getCode().toLowerCase().equals("it")) {
 			return new String[][] { { "a.it_ticket.create", "./a/itTicket/create/" },
 					{ "a.it_ticket.my_tickets", "./a/itTicket/my_tickets" }, { "a.it_ticket.faq", "./a/itTicket/faq" },
+					{ "a.it_ticket.report", "./a/itTicket/report" },
 					{ "gen.administration", "./a/itTicket/admin" } };
 
 		} else {
@@ -575,5 +658,7 @@ public class A1TricketController {
 		}
 
 	}
+
+
 
 }

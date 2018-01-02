@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nfc.portal.entity.A1Ticket;
+import com.nfc.portal.entity.A1Track;
+import com.nfc.portal.entity.Staff;
 import com.nfc.portal.entity.User;
 import com.nfc.portal.repository.A1TicketRepository;
+import com.nfc.portal.repository.A1TrackRepository;
 import com.nfc.portal.service.A1TicketService;
 
 @Service("a_IT_TicketService")
@@ -22,6 +25,9 @@ public class A1TicketServiceImp implements A1TicketService {
 	*/
 	@Autowired
 	A1TicketRepository a1TicketRepository;
+
+	@Autowired
+	A1TrackRepository a1TrackRepository;
 	
 	public void create(A1Ticket a_IT_Ticket) {
 		
@@ -60,5 +66,25 @@ public class A1TicketServiceImp implements A1TicketService {
 		return a1TicketRepository.findByCreated_by(created_by);
 		
 	}
+
+	@Override
+	public List<A1Track> findByCreatedByAndTrack(User created_by, String track) {
+
+		return a1TrackRepository.findByCreatedByAndTrack(created_by, track);
+	}
+
+	@Override
+	public List<A1Track> findByCreatedByAndTrackNotClosed(User created_by) {
+		// TODO Auto-generated method stub
+		return a1TrackRepository.findByCreatedByAndTrackNotClosed(created_by);
+	}
+
+	@Override
+	public List<A1Ticket> findByRecipients(Staff staff) {
+		// TODO Auto-generated method stub
+		return a1TicketRepository.findByRecipients(staff);
+	}
+	
+	
 
 }
